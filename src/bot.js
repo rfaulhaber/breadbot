@@ -1,7 +1,7 @@
 var Botkit = require('botkit');
 
 var commands = require('./commands');
-var db = require('./db');
+// var db = require('./db');
 
 var Breadbot = function(token) {
     this.token = token;
