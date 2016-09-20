@@ -24,16 +24,11 @@ Breadbot.prototype.initialize = function() {
     });
 
     // TODO: put all this.controller commands here
-    this.controller.on('direct_message', function(bot, message) {
-        console.log("Someone privately sent me: ", message);
-    });
+    let keywords = ['breadbot', 'bread fact', 'joke'];
+    let events = ['message_received'];
 
-    this.controller.on('direct_mention', function(bot, message) {
-        bot.reply(message,{
-          text: "A more complex response",
-          username: "ReplyBot",
-          icon_emoji: ":dash:",
-        });
+    this.controller.hears(keywords, events, function(bot, message) {
+        console.log(message);
     });
 }
 
