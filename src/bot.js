@@ -1,7 +1,6 @@
 var Botkit = require('botkit');
 
 var commands = require('./commands');
-// var db = require('./db');
 
 var Breadbot = function(token) {
     this.token = token;
@@ -26,11 +25,17 @@ Breadbot.prototype.initialize = function() {
 
     // TODO: put all this.controller commands here
     this.controller.on('direct_message', function(bot, message) {
-        bot.reply(message, "I heard that!");
+        console.log("Someone privately sent me: ", message);
+    });
+
+    this.controller.on('direct_mention', function(bot, message) {
+        bot.reply(message,{
+          text: "A more complex response",
+          username: "ReplyBot",
+          icon_emoji: ":dash:",
+        });
     });
 }
-
-
 
 module.exports = {
     Breadbot: Breadbot
