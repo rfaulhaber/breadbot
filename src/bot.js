@@ -18,7 +18,6 @@ Breadbot.prototype.spawn = function() {
 Breadbot.prototype.initialize = function() {
     this.bot.startRTM(function(error, bot, payload) {
         if (error) {
-            // throw new Error("Couldn't connect to Slack!");
             console.log("Couldn't connect to Slack!");
         } else {
             console.log("Connected to Slack!");
@@ -26,6 +25,9 @@ Breadbot.prototype.initialize = function() {
     });
 
     // TODO: put all this.controller commands here
+    this.controller.on('direct_message', function(bot, message) {
+        bot.reply(message, "I heard that!");
+    });
 }
 
 
