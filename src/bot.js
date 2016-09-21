@@ -18,7 +18,7 @@ Breadbot.prototype.spawn = function() {
 }
 
 Breadbot.prototype.initialize = function() {
-    let hearsKeywords = ['bread fact', ':bread:', 'joke'];
+    const hearsKeywords = ['bread fact', ':bread:', 'joke'];
 
     this.bot.startRTM(function(error, bot, payload) {
         if (error) {
@@ -27,7 +27,6 @@ Breadbot.prototype.initialize = function() {
             console.log("Connected to Slack!");
         }
     });
-
 
     this.controller.hears(hearsKeywords, ['direct_mention'], function(bot, message) {
         handleDirect(bot, message);
@@ -51,7 +50,7 @@ Breadbot.prototype.initialize = function() {
 
     function handleBreadPrompt(bot, message) {
         console.log("I must tell a bread fact!");
-        let breadFactDate = Breadbot.lastBreadFact;
+        const breadFactDate = Breadbot.lastBreadFact;
 
         if (breadFactDate == undefined || hoursSince(breadFactDate.getTime()) >= 24) {
             bot.reply(message, getBreadFact());
@@ -67,8 +66,7 @@ Breadbot.prototype.initialize = function() {
     }
 
     function hoursSince(time) {
-        var t = Math.abs(time - new Date().getTime()) / (1000 * 3600);
-        return t;
+        return Math.abs(time - new Date().getTime()) / (1000 * 3600);
     }
 
     function getBreadFact() {
@@ -76,9 +74,13 @@ Breadbot.prototype.initialize = function() {
     }
 
     function getNoBreadMessage() {
-        var timeUntil = (24 - hoursSince(Breadbot.lastBreadFact.getTime())).toFixed(2);
+        const timeUntil = (24 - hoursSince(Breadbot.lastBreadFact.getTime())).toFixed(2);
         return "Sorry, I only tell one bread fact a day! You must wait " +
              timeUntil + " hours to hear another one!";
+    }
+
+    function getJoke() {
+        return "blah blah blah";
     }
 }
 
