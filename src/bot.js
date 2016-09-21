@@ -1,5 +1,6 @@
-var Botkit = require('botkit');
+'use strict'
 
+var Botkit = require('botkit');
 var commands = require('./commands');
 
 var Breadbot = function(token) {
@@ -23,12 +24,19 @@ Breadbot.prototype.initialize = function() {
         }
     });
 
-    // TODO: put all this.controller commands here
-    let keywords = ['breadbot', 'bread fact', 'joke'];
-    let events = ['message_received'];
+    let keywords = ['bread fact', ':bread:', 'joke'];
+    let events = ['direct_mention'];
 
     this.controller.hears(keywords, events, function(bot, message) {
-        console.log(message);
+        switch(message.match[0]) {
+            case keywords[0]:
+            case keywords[1]:
+                console.log("I must tell a bread fact!");
+                break;
+            case keywords[2]:
+                console.log("I must tell a joke!");
+                break;
+        }
     });
 }
 
