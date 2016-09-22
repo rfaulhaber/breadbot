@@ -74,16 +74,11 @@ Breadbot.prototype.initialize = function() {
     }
 
     function getBreadFact() {
-        var l = self.facts.length;
-        if (l == undefined) {
-            l = 0;
-        }
-        var n = Math.random() * l;
-        return self.facts[n];
+        return self.facts[Math.floor(Math.random() * self.facts.length)];
     }
 
     function getNoBreadMessage() {
-        const timeUntil = (24 - hoursSince(Breadbot.lastBreadFact.getTime())).toFixed(2);
+        const timeUntil = (24 - hoursSince(self.lastBreadFact.getTime())).toFixed(2);
         return "Sorry, I only tell one bread fact a day! You must wait " +
              timeUntil + " hours to hear another one!";
     }
@@ -99,6 +94,8 @@ Breadbot.prototype.initialize = function() {
 
         lineReader.on('line', function (line) {
             self.facts.push(line);
+            console.log(line);
+            console.log(self.facts.length);
         });
     }
 }
