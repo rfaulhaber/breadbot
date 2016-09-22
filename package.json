@@ -19,6 +19,6 @@
   "homepage": "https://github.com/rfaulhaber/breadbot#readme",
   "dependencies": {
     "botkit": "^0.2.2",
-    "redis": "^2.6.2"
+    "botkit-storage-redis": "^1.0.1"
   }
 }

@@ -2,11 +2,13 @@
 
 var Botkit = require('botkit');
 var commands = require('./commands');
+// var redisStorage = require('botkit-storage-redis');
 
 var Breadbot = function(token) {
     this.token = token;
     this.controller = Botkit.slackbot();
     this.bot = this.spawn();
+    this.facts = [];
     this.lastBreadFact;
     this.lastJoke;
 }
@@ -19,12 +21,14 @@ Breadbot.prototype.spawn = function() {
 
 Breadbot.prototype.initialize = function() {
     const hearsKeywords = ['bread fact', ':bread:', 'joke'];
+    var self = this;
 
     this.bot.startRTM(function(error, bot, payload) {
         if (error) {
             console.log("Couldn't connect to Slack!");
         } else {
             console.log("Connected to Slack!");
+            loadBreadText();
         }
     });
 
@@ -50,11 +54,11 @@ Breadbot.prototype.initialize = function() {
 
     function handleBreadPrompt(bot, message) {
         console.log("I must tell a bread fact!");
-        const breadFactDate = Breadbot.lastBreadFact;
+        const breadFactDate = self.lastBreadFact;
 
         if (breadFactDate == undefined || hoursSince(breadFactDate.getTime()) >= 24) {
             bot.reply(message, getBreadFact());
-            Breadbot.lastBreadFact = new Date();
+            self.lastBreadFact = new Date();
         } else {
             bot.reply(message, getNoBreadMessage());
         }
@@ -70,7 +74,12 @@ Breadbot.prototype.initialize = function() {
     }
 
     function getBreadFact() {
-        return "Bread is a food!"; // TODO: change placeholder text
+        var l = self.facts.length;
+        if (l == undefined) {
+            l = 0;
+        }
+        var n = Math.random() * l;
+        return self.facts[n];
     }
 
     function getNoBreadMessage() {
@@ -81,6 +90,16 @@ Breadbot.prototype.initialize = function() {
 
     function getJoke() {
         return "blah blah blah";
+    }
+
+    function loadBreadText() {
+        var lineReader = require('readline').createInterface({
+          input: require('fs').createReadStream('data/bread.txt')
+        });
+
+        lineReader.on('line', function (line) {
+            self.facts.push(line);
+        });
     }
 }
 
