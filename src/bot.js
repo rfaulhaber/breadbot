@@ -20,7 +20,8 @@ Breadbot.prototype.spawn = function() {
 }
 
 Breadbot.prototype.initialize = function() {
-    const hearsKeywords = ['bread fact', ':bread:', 'joke'];
+    const hearsDirectKeywords = ['bread fact', ':bread:', 'joke'];
+    const hearsAmbientKeywords = ['no fun allowed'];
     var self = this;
 
     this.bot.startRTM(function(error, bot, payload) {
@@ -32,8 +33,12 @@ Breadbot.prototype.initialize = function() {
         }
     });
 
-    this.controller.hears(hearsKeywords, ['direct_mention'], function(bot, message) {
+    this.controller.hears(hearsDirectKeywords, ['direct_mention'], function(bot, message) {
         handleDirect(bot, message);
+    });
+
+    this.controller.hears(hearsAmbientKeywords, ['ambient'], function(bot, message) {
+        bot.reply(message, 'http://i1.kym-cdn.com/photos/images/facebook/000/731/143/3e3.jpg');
     });
 
     this.controller.on('direct_message', function(bot, message) {
@@ -42,11 +47,11 @@ Breadbot.prototype.initialize = function() {
 
     function handleDirect(bot, message) {
         switch(message.match[0]) {
-            case hearsKeywords[0]:
-            case hearsKeywords[1]:
+            case hearsDirectKeywords[0]:
+            case hearsDirectKeywords[1]:
                 handleBreadPrompt(bot, message);
                 break;
-            case hearsKeywords[2]:
+            case hearsDirectKeywords[2]:
                 handleJokePrompt(bot, message);
                 break;
         }
@@ -94,8 +99,6 @@ Breadbot.prototype.initialize = function() {
 
         lineReader.on('line', function (line) {
             self.facts.push(line);
-            console.log(line);
-            console.log(self.facts.length);
         });
     }
 }
