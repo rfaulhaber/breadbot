@@ -61,7 +61,7 @@ Breadbot.prototype.initialize = function() {
                 handleJokePrompt(bot, message);
                 break;
             case hearsDirectKeywords[3]:
-                handleRecipePrompt();
+                handleRecipePrompt(bot, message);
         }
     }
 
