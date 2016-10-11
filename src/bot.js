@@ -9,6 +9,8 @@ var Breadbot = function(token) {
     this.controller = Botkit.slackbot();
     this.bot = this.spawn();
     this.facts = [];
+    this.jokes = [];
+    this.recipes = [];
     this.lastBreadFact;
     this.lastJoke;
 }
@@ -20,8 +22,9 @@ Breadbot.prototype.spawn = function() {
 }
 
 Breadbot.prototype.initialize = function() {
-    const hearsDirectKeywords = ['bread fact', ':bread:', 'joke'];
+    const hearsDirectKeywords = ['bread fact', ':bread:', 'joke', 'recipe'];
     const hearsAmbientKeywords = ['no fun allowed'];
+    const noFunAllowedLink = 'http://i1.kym-cdn.com/photos/images/facebook/000/731/143/3e3.jpg';
     var self = this;
 
     this.bot.startRTM(function(error, bot, payload) {
@@ -30,6 +33,8 @@ Breadbot.prototype.initialize = function() {
         } else {
             console.log("Connected to Slack!");
             loadBreadText();
+            loadJokeText();
+            loadRecipeText();
         }
     });
 
@@ -38,7 +43,7 @@ Breadbot.prototype.initialize = function() {
     });
 
     this.controller.hears(hearsAmbientKeywords, ['ambient'], function(bot, message) {
-        bot.reply(message, 'http://i1.kym-cdn.com/photos/images/facebook/000/731/143/3e3.jpg');
+        bot.reply(message, noFunAllowedLink);
     });
 
     this.controller.on('direct_message', function(bot, message) {
@@ -46,6 +51,7 @@ Breadbot.prototype.initialize = function() {
     });
 
     function handleDirect(bot, message) {
+        // TODO: make all these one function based on keyword
         switch(message.match[0]) {
             case hearsDirectKeywords[0]:
             case hearsDirectKeywords[1]:
@@ -54,6 +60,8 @@ Breadbot.prototype.initialize = function() {
             case hearsDirectKeywords[2]:
                 handleJokePrompt(bot, message);
                 break;
+            case hearsDirectKeywords[3]:
+                handleRec
         }
     }
 
@@ -74,10 +82,16 @@ Breadbot.prototype.initialize = function() {
         bot.reply(message, getJoke());
     }
 
+    function handleRecipePrompt(bot, message) {
+        console.log("I must provide a recipe!");
+        bot.reply(message, getRecipe());
+    }
+
     function hoursSince(time) {
         return Math.abs(time - new Date().getTime()) / (1000 * 3600);
     }
 
+    // TODO: merge these functions into one
     function getBreadFact() {
         return self.facts[Math.floor(Math.random() * self.facts.length)];
     }
@@ -89,7 +103,11 @@ Breadbot.prototype.initialize = function() {
     }
 
     function getJoke() {
-        return "blah blah blah";
+        return self.jokes[Math.floor(Math.random() * self.jokes.length)];
+    }
+
+    function getRecipe() {
+        return self.recipes[Math.floor(Math.random() * self.recipes.length)];
     }
 
     function loadBreadText() {
@@ -99,6 +117,26 @@ Breadbot.prototype.initialize = function() {
 
         lineReader.on('line', function (line) {
             self.facts.push(line);
+        });
+    }
+
+    function loadJokeText() {
+        var lineReader = require('readline').createInterface({
+          input: require('fs').createReadStream('data/jokes.txt')
+        });
+
+        lineReader.on('line', function (line) {
+            self.jokes.push(line);
+        });
+    }
+
+    function loadRecipeText() {
+        var lineReader = require('readline').createInterface({
+          input: require('fs').createReadStream('data/recipes.txt')
+        });
+
+        lineReader.on('line', function (line) {
+            self.recipes.push(line);
         });
     }
 }
